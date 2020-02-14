@@ -13,3 +13,4 @@ source/ExternalDLL/.vs/ExternalDLL2015/v16/.suo
 .vs/ProjectSettings.json
 source/ExternalDLL/ExternalDLL/ExternalDLL2017.vcxproj
 *.vcxproj
+debug/FaceMinMin
