@@ -3,21 +3,23 @@
 * Unauthorized copying of this file, via any medium is strictly prohibited
 * Proprietary and confidential
 */
-
+#pragma warning(disable : 4996)
 #include <iostream> //std::cout
 #include "ImageIO.h" //Image load and save functionality
 #include "HereBeDragons.h"
 #include "ImageFactory.h"
 #include "DLLExecution.h"
+#include <chrono>
+#include <ctime>   
 
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
 
 int main(int argc, char * argv[]) {
+	auto start = std::chrono::system_clock::now();
 
 	ImageFactory::setImplementation(ImageFactory::DEFAULT);
 	//ImageFactory::setImplementation(ImageFactory::STUDENT);
-
 
 	ImageIO::debugFolder = "../../../debug/FaceMinMin";
 	ImageIO::isInDebugMode = true; //If set to false the ImageIO class will skip any image save function calls
@@ -32,7 +34,6 @@ int main(int argc, char * argv[]) {
 		return 0;
 	}
 
-
 	ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
 
 	DLLExecution * executor = new DLLExecution(input);
@@ -46,18 +47,17 @@ int main(int argc, char * argv[]) {
 		}
 	}
 
+	auto end = std::chrono::system_clock::now();
+
+	std::chrono::duration<double> elapsed_seconds = end - start;
+	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+
+	std::cout << "Elapsed time: " << elapsed_seconds.count() << "s\n";
+
 	delete executor;
 	system("pause");
 	return 1;
 }
-
-
-
-
-
-
-
-
 
 
 bool executeSteps(DLLExecution * executor) {
@@ -85,7 +85,6 @@ bool executeSteps(DLLExecution * executor) {
 		return false;
 	}
 	ImageIO::saveIntensityImage(*executor->resultPreProcessingStep4, ImageIO::getDebugFileName("Pre-processing-4.png"));
-
 
 
 	//Execute the localization steps
@@ -118,7 +117,6 @@ bool executeSteps(DLLExecution * executor) {
 		std::cout << "Localization step 5 failed!" << std::endl;
 		return false;
 	}
-
 
 
 	//Execute the extraction steps
