@@ -12,49 +12,73 @@
 #include <chrono>
 #include <ctime>   
 
+
+#include <iomanip>
+
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
 
 int main(int argc, char * argv[]) {
-	auto start = std::chrono::system_clock::now();
+	auto startTotal = std::chrono::system_clock::now();
 
 	ImageFactory::setImplementation(ImageFactory::DEFAULT);
 	//ImageFactory::setImplementation(ImageFactory::STUDENT);
 
 	ImageIO::debugFolder = "../../../debug/FaceMinMin";
 	ImageIO::isInDebugMode = true; //If set to false the ImageIO class will skip any image save function calls
+	   
+	int aantalFotots = 100;
+	for (int i = 1; i < aantalFotots; i++) {
+		auto startIntensity = std::chrono::system_clock::now();
 
+		RGBImage* input = ImageFactory::newRGBImage();
 
+		std::stringstream a_stream;
+		a_stream << std::setfill('0') << std::setw(6) << i;
+		std::string filename = a_stream.str();
+		//std::cout << "filename: " << filename << "\n";
 
-	
-	RGBImage * input = ImageFactory::newRGBImage();
-	if (!ImageIO::loadImage("../../../testsets/Set A/TestSet Images/female-2.png", *input)) {
-		std::cout << "Image could not be loaded!" << std::endl;
-		system("pause");
-		return 0;
-	}
+		//std::string imagePathJelle = 
+			std::string imagePathMart = "test" + filename + ".jpg";
 
-	ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
-
-	DLLExecution * executor = new DLLExecution(input);
-
-
-	if (executeSteps(executor)) {
-		std::cout << "Face recognition successful!" << std::endl;
-		std::cout << "Facial parameters: " << std::endl;
-		for (int i = 0; i < 16; i++) {
-			std::cout << (i+1) << ": " << executor->facialParameters[i] << std::endl;
+		if (!ImageIO::loadImage("../../../testsets/Set A/TestSet Images/female-2.png", *input)) {
+			std::cout << "Image could not be loaded!" << std::endl;
+			system("pause");
+			return 0;
 		}
+
+		ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
+
+		DLLExecution* executor = new DLLExecution(input);
+
+
+		if (executeSteps(executor)) {
+			std::cout << "Face recognition successful!" << std::endl;
+			std::cout << "Facial parameters: " << std::endl;
+			for (int i = 0; i < 16; i++) {
+				std::cout << (i + 1) << ": " << executor->facialParameters[i] << std::endl;
+			}
+		}
+
+		delete executor;
+
+
+		auto endIntensity = std::chrono::system_clock::now();
+
+		std::chrono::duration<double> elapsed_seconds_intensity = endIntensity - startIntensity;
+		std::time_t end_time = std::chrono::system_clock::to_time_t(endIntensity);
+		// Niet in een cout
+		std::cout << "Elapsed time: " << elapsed_seconds_intensity.count() << "s\n";
 	}
 
-	auto end = std::chrono::system_clock::now();
 
-	std::chrono::duration<double> elapsed_seconds = end - start;
-	std::time_t end_time = std::chrono::system_clock::to_time_t(end);
+	auto endTotal = std::chrono::system_clock::now();
 
-	std::cout << "Elapsed time: " << elapsed_seconds.count() << "s\n";
+	std::chrono::duration<double> elapsed_seconds_total = endTotal - startTotal;
+	std::time_t end_time = std::chrono::system_clock::to_time_t(endTotal);
+	// Niet in een cout
+	std::cout << "Elapsed time: " << elapsed_seconds_total.count() << "s\n";
 
-	delete executor;
 	system("pause");
 	return 1;
 }
