@@ -9,25 +9,34 @@
 #include "HereBeDragons.h"
 #include "ImageFactory.h"
 #include "DLLExecution.h"
-#include <chrono>
+
+#include <chrono> //voor de timers
 #include <ctime>   
 
+#include <iomanip> //om de bestandsnamen te genereren
+#include <fstream> //om de data op te slaan in een txt file
 
-#include <iomanip>
+
+
 
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
 
 int main(int argc, char * argv[]) {
-	auto startTotal = std::chrono::system_clock::now();
+	auto startTotal = std::chrono::system_clock::now();//total time
 
-	ImageFactory::setImplementation(ImageFactory::DEFAULT);
-	//ImageFactory::setImplementation(ImageFactory::STUDENT);
+	//ImageFactory::setImplementation(ImageFactory::DEFAULT);
+	ImageFactory::setImplementation(ImageFactory::STUDENT);
 
 	ImageIO::debugFolder = "../../../debug/FaceMinMin";
-	ImageIO::isInDebugMode = true; //If set to false the ImageIO class will skip any image save function calls
-	   
-	int aantalFotots = 100;
+	ImageIO::isInDebugMode = false; //If set to false the ImageIO class will skip any image save function calls
+	  
+	std::ofstream myfile; //data opslaaan
+	myfile.open("../../../meetrapporten/working/test1.txt");
+	
+	myfile << "filename" << ";" << "elapsed_seconds_intensity.count()\n"; //wat waar staat
+
+	int aantalFotots = 10;
 	for (int i = 1; i < aantalFotots; i++) {
 		auto startIntensity = std::chrono::system_clock::now();
 
@@ -36,12 +45,12 @@ int main(int argc, char * argv[]) {
 		std::stringstream a_stream;
 		a_stream << std::setfill('0') << std::setw(6) << i;
 		std::string filename = a_stream.str();
-		//std::cout << "filename: " << filename << "\n";
 
 		//std::string imagePathJelle = 
-			std::string imagePathMart = "test" + filename + ".jpg";
+		std::string imagePathMart = "../../../../../pictureDatabase/img_align_celeba/img_align_celeba/" + filename + ".jpg";
+		//std::string testSet = "../../../testsets/Set A/TestSet Images/female-2.png";
 
-		if (!ImageIO::loadImage("../../../testsets/Set A/TestSet Images/female-2.png", *input)) {
+		if (!ImageIO::loadImage(imagePathMart, *input)) {
 			std::cout << "Image could not be loaded!" << std::endl;
 			system("pause");
 			return 0;
@@ -69,15 +78,19 @@ int main(int argc, char * argv[]) {
 		std::time_t end_time = std::chrono::system_clock::to_time_t(endIntensity);
 		// Niet in een cout
 		std::cout << "Elapsed time: " << elapsed_seconds_intensity.count() << "s\n";
+
+		myfile << filename << ";" << elapsed_seconds_intensity.count() << std::endl;
 	}
 
 
-	auto endTotal = std::chrono::system_clock::now();
+	auto endTotal = std::chrono::system_clock::now(); //total time
 
-	std::chrono::duration<double> elapsed_seconds_total = endTotal - startTotal;
-	std::time_t end_time = std::chrono::system_clock::to_time_t(endTotal);
-	// Niet in een cout
-	std::cout << "Elapsed time: " << elapsed_seconds_total.count() << "s\n";
+	std::chrono::duration<double> elapsed_seconds_total = endTotal - startTotal; //total time
+	std::time_t end_time = std::chrono::system_clock::to_time_t(endTotal); //total time
+
+//	std::cout << "Elapsed time: " << elapsed_seconds_total.count() << "s\n";
+	myfile << "total time in sec: " << elapsed_seconds_total.count();//data opslaan
+	myfile.close();//data in file
 
 	system("pause");
 	return 1;
