@@ -36,7 +36,7 @@ int main(int argc, char * argv[]) {
 	
 	myfile << "filename" << ";" << "elapsed_seconds_intensity.count()\n"; //wat waar staat
 
-	int aantalFotots = 10;
+	int aantalFotots = 30;
 	for (int i = 1; i < aantalFotots; i++) {
 		auto startIntensity = std::chrono::system_clock::now();
 
@@ -46,7 +46,7 @@ int main(int argc, char * argv[]) {
 		a_stream << std::setfill('0') << std::setw(6) << i;
 		std::string filename = a_stream.str();
 
-		std::string imagePath = "../../../debug/celebDataset/" + filename + ".jpg"; // Jelle
+		std::string imagePath = "../../../testsets/celebDataset/" + filename + ".jpg"; // Jelle
 		//std::string imagePath = "../../../../../pictureDatabase/img_align_celeba/img_align_celeba/" + filename + ".jpg"; // Mart
 		//std::string imagePath = "../../../testsets/Set A/TestSet Images/female-2.png"; // Testset
 

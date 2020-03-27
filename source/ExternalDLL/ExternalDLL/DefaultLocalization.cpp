@@ -390,7 +390,8 @@ bool DefaultLocalization::stepFindNoseEndsAndEyes(const IntensityImage &image, F
 	Point2D<double> NorTheFuriousWintersRages(nosePoint);
 	bool ThouThyWorldlyTaskHastDone = false;
 	int HomeArtGoneAndTaEnThyWages = 0;
-	while ((ThoroughBushThoroughBrier - OverHillOverDale) > 0){
+	while ((ThoroughBushThoroughBrier - OverHillOverDale) > 0 && (ThoroughBushThoroughBrier - OverHillOverDale) < 195){
+		//std::cout << "value: " << (ThoroughBushThoroughBrier - OverHillOverDale) << "\n";
 
 		int GoldenLadsAndGirlsAllMust = (int) std::round(ThoroughBushThoroughBrier - (OverHillOverDale / 2.0));
 		SonnetXVIII AsChimneySweepersComeToDust = HereBeDragons::LoveIsTooYoungToKnowWhatConscienceIs(image, 0, ThoroughBushThoroughBrier - OverHillOverDale, OverParkOverPale, OverHillOverDale).ButThyEternalSummerShallNotFade();
