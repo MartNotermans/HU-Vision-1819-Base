@@ -46,11 +46,11 @@ int main(int argc, char * argv[]) {
 		a_stream << std::setfill('0') << std::setw(6) << i;
 		std::string filename = a_stream.str();
 
-		//std::string imagePathJelle = 
-		std::string imagePathMart = "../../../../../pictureDatabase/img_align_celeba/img_align_celeba/" + filename + ".jpg";
-		//std::string testSet = "../../../testsets/Set A/TestSet Images/female-2.png";
+		std::string imagePath = "../../../debug/celebDataset/" + filename + ".jpg"; // Jelle
+		//std::string imagePath = "../../../../../pictureDatabase/img_align_celeba/img_align_celeba/" + filename + ".jpg"; // Mart
+		//std::string imagePath = "../../../testsets/Set A/TestSet Images/female-2.png"; // Testset
 
-		if (!ImageIO::loadImage(imagePathMart, *input)) {
+		if (!ImageIO::loadImage(imagePath, *input)) {
 			std::cout << "Image could not be loaded!" << std::endl;
 			system("pause");
 			return 0;
