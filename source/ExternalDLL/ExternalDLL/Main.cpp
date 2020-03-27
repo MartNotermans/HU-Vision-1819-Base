@@ -22,6 +22,8 @@
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
 
+int timePreProcessingStep1 = 0;
+
 int main(int argc, char * argv[]) {
 	auto startTotal = std::chrono::system_clock::now();//total time
 
@@ -34,7 +36,7 @@ int main(int argc, char * argv[]) {
 	std::ofstream myfile; //data opslaaan
 	myfile.open("../../../meetrapporten/working/test1.txt");
 	
-	myfile << "filename" << ";" << "elapsed_seconds_intensity.count()\n"; //wat waar staat
+	myfile << "filename" << ";" << "timePreProcessingStep1" << ";" << "elapsed_seconds_tests.count()\n"; //wat waar staat
 
 	int aantalFotots = 30;
 	for (int i = 1; i <= aantalFotots; i++) {
@@ -79,7 +81,7 @@ int main(int argc, char * argv[]) {
 		std::chrono::duration<double> elapsed_seconds_tests = endTests - startTests;
 		std::time_t end_time = std::chrono::system_clock::to_time_t(endTests);
 
-		myfile << filename << ";" << elapsed_seconds_tests.count() << std::endl;
+		myfile << filename << ";" << timePreProcessingStep1 << ";" << elapsed_seconds_tests.count() << std::endl;
 	}
 
 
@@ -100,10 +102,17 @@ int main(int argc, char * argv[]) {
 bool executeSteps(DLLExecution * executor) {
 
 	//Execute the four Pre-processing steps
+
+	auto startPreProcessingStep1 = std::chrono::system_clock::now();//PreProcessingStep1 time
 	if (!executor->executePreProcessingStep1(false)) {
 		std::cout << "Pre-processing step 1 failed!" << std::endl;
 		return false;
 	}
+	auto endPreProcessingStep1 = std::chrono::system_clock::now(); //PreProcessingStep1 time
+
+	std::chrono::duration<double> elapsed_seconds_PreProcessingStep1 = endPreProcessingStep1 - startPreProcessingStep1; //PreProcessingStep1 time
+	std::time_t end_time = std::chrono::system_clock::to_time_t(endPreProcessingStep1); //PreProcessingStep1 time
+	timePreProcessingStep1 = elapsed_seconds_PreProcessingStep1.count();
 
 	if (!executor->executePreProcessingStep2(false)) {
 		std::cout << "Pre-processing step 2 failed!" << std::endl;
