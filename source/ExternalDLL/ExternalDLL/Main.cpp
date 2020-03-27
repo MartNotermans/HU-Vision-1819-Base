@@ -36,13 +36,15 @@ int main(int argc, char * argv[]) {
 	std::ofstream myfile; //data opslaaan
 	myfile.open("../../../meetrapporten/working/test1.txt");
 	
-	myfile << "filename" << ";" << "timePreProcessingStep1" << ";" << "elapsed_seconds_tests.count()\n"; //wat waar staat
+	myfile << "filename" << ";" << "input->getHeight" << ";" << "input->getWidth" << ";" << "timePreProcessingStep1" << ";" << "elapsed_seconds_tests.count()\n"; //wat waar staat
 
 	int aantalFotots = 30;
 	for (int i = 1; i <= aantalFotots; i++) {
 		auto startTests = std::chrono::system_clock::now();
 
 		RGBImage* input = ImageFactory::newRGBImage();
+
+		
 
 		std::stringstream a_stream;
 		a_stream << std::setfill('0') << std::setw(6) << i;
@@ -82,7 +84,7 @@ int main(int argc, char * argv[]) {
 		std::time_t end_time = std::chrono::system_clock::to_time_t(endTests);
 
 		std::cout << "===============" << timePreProcessingStep1 << std::endl;
-		myfile << filename << ";" << timePreProcessingStep1 << ";" << elapsed_seconds_tests.count() << std::endl;
+		myfile << filename << "\t" << timePreProcessingStep1 << "\t" << elapsed_seconds_tests.count() << std::endl; //sve data
 	}
 
 
@@ -92,7 +94,7 @@ int main(int argc, char * argv[]) {
 	std::time_t end_time = std::chrono::system_clock::to_time_t(endTotal); //total time
 
 //	std::cout << "Elapsed time: " << elapsed_seconds_total.count() << "s\n";
-	myfile << "total time in sec: " << elapsed_seconds_total.count();//data opslaan
+	myfile << "total time in sec: " << elapsed_seconds_total.count();//final data save
 	myfile.close();//data in file
 
 	system("pause");
