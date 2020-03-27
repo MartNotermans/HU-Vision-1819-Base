@@ -17,8 +17,6 @@
 #include <fstream> //om de data op te slaan in een txt file
 
 
-
-
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
 
@@ -26,6 +24,7 @@ float timePreProcessingStep1 = 0;
 
 int main(int argc, char * argv[]) {
 	auto startTotal = std::chrono::system_clock::now();//total time
+	int nSuccessfulFaceRecognition = 0;
 
 	//ImageFactory::setImplementation(ImageFactory::DEFAULT);
 	ImageFactory::setImplementation(ImageFactory::STUDENT);
@@ -36,9 +35,9 @@ int main(int argc, char * argv[]) {
 	std::ofstream myfile; //data opslaaan
 	myfile.open("../../../meetrapporten/working/test1.txt");
 	
-	myfile << "filename" << ";" << "input->getHeight" << ";" << "input->getWidth" << ";" << "timePreProcessingStep1" << ";" << "elapsed_seconds_tests.count()\n"; //wat waar staat
+	myfile << "filename" << "\t" << "timePreProcessingStep1" << "\t" << "elapsed_seconds_tests.count()\n"; //wat waar staat
 
-	int aantalFotots = 30;
+	int aantalFotots = 50;
 	for (int i = 1; i <= aantalFotots; i++) {
 		auto startTests = std::chrono::system_clock::now();
 
@@ -49,17 +48,20 @@ int main(int argc, char * argv[]) {
 		std::stringstream a_stream;
 		a_stream << std::setfill('0') << std::setw(6) << i;
 		std::string filename = a_stream.str();
+		//std::string filename = std::to_string(i);
 
-		std::string imagePath = "../../../testsets/celebDataset/" + filename + ".jpg"; // Jelle
-		//std::string imagePath = "../../../../../pictureDatabase/img_align_celeba/img_align_celeba/" + filename + ".jpg"; // Mart
+		//std::string imagePath = "../../../testsets/celebDataset/" + filename + ".jpg"; // Jelle
+		std::string imagePath = "../../../../../pictureDatabase/img_align_celeba/img_align_celeba/" + filename + ".jpg"; // Mart
 		//std::string imagePath = "../../../testsets/Set A/TestSet Images/female-2.png"; // Testset
+		//std::string imagePath = "../../../../../pictureDatabase/Testset-matthijs/PassPhotos/" + filename + ".png"; //testset matthijs pasfoto's
 
 		std::cout << "filename: " << filename << "\n";
 
 		if (!ImageIO::loadImage(imagePath, *input)) {
-			std::cout << "Image could not be loaded!" << std::endl;
+			continue;
+			/*std::cout << "Image could not be loaded!" << std::endl;
 			system("pause");
-			return 0;
+			return 0;*/
 		}
 
 		ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
@@ -69,6 +71,7 @@ int main(int argc, char * argv[]) {
 
 		if (executeSteps(executor)) {
 			std::cout << "Face recognition successful!" << std::endl;
+			nSuccessfulFaceRecognition++;
 			std::cout << "Facial parameters: " << std::endl;
 			for (int i = 0; i < 16; i++) {
 				std::cout << (i + 1) << ": " << executor->facialParameters[i] << std::endl;
@@ -83,7 +86,6 @@ int main(int argc, char * argv[]) {
 		std::chrono::duration<double> elapsed_seconds_tests = endTests - startTests;
 		std::time_t end_time = std::chrono::system_clock::to_time_t(endTests);
 
-		std::cout << "===============" << timePreProcessingStep1 << std::endl;
 		myfile << filename << "\t" << timePreProcessingStep1 << "\t" << elapsed_seconds_tests.count() << std::endl; //sve data
 	}
 
@@ -94,7 +96,7 @@ int main(int argc, char * argv[]) {
 	std::time_t end_time = std::chrono::system_clock::to_time_t(endTotal); //total time
 
 //	std::cout << "Elapsed time: " << elapsed_seconds_total.count() << "s\n";
-	myfile << "total time in sec: " << elapsed_seconds_total.count();//final data save
+	myfile << "total time in sec: " << elapsed_seconds_total.count() << "nSuccessfulFaceRecognition: " << nSuccessfulFaceRecognition;//final data save
 	myfile.close();//data in file
 
 	system("pause");
