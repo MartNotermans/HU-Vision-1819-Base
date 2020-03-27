@@ -37,8 +37,8 @@ int main(int argc, char * argv[]) {
 	myfile << "filename" << ";" << "elapsed_seconds_intensity.count()\n"; //wat waar staat
 
 	int aantalFotots = 30;
-	for (int i = 1; i < aantalFotots; i++) {
-		auto startIntensity = std::chrono::system_clock::now();
+	for (int i = 1; i <= aantalFotots; i++) {
+		auto startTests = std::chrono::system_clock::now();
 
 		RGBImage* input = ImageFactory::newRGBImage();
 
@@ -49,6 +49,8 @@ int main(int argc, char * argv[]) {
 		std::string imagePath = "../../../testsets/celebDataset/" + filename + ".jpg"; // Jelle
 		//std::string imagePath = "../../../../../pictureDatabase/img_align_celeba/img_align_celeba/" + filename + ".jpg"; // Mart
 		//std::string imagePath = "../../../testsets/Set A/TestSet Images/female-2.png"; // Testset
+
+		std::cout << "filename: " << filename << "\n";
 
 		if (!ImageIO::loadImage(imagePath, *input)) {
 			std::cout << "Image could not be loaded!" << std::endl;
@@ -72,14 +74,12 @@ int main(int argc, char * argv[]) {
 		delete executor;
 
 
-		auto endIntensity = std::chrono::system_clock::now();
+		auto endTests = std::chrono::system_clock::now();
 
-		std::chrono::duration<double> elapsed_seconds_intensity = endIntensity - startIntensity;
-		std::time_t end_time = std::chrono::system_clock::to_time_t(endIntensity);
-		// Niet in een cout
-		std::cout << "Elapsed time: " << elapsed_seconds_intensity.count() << "s\n";
+		std::chrono::duration<double> elapsed_seconds_tests = endTests - startTests;
+		std::time_t end_time = std::chrono::system_clock::to_time_t(endTests);
 
-		myfile << filename << ";" << elapsed_seconds_intensity.count() << std::endl;
+		myfile << filename << ";" << elapsed_seconds_tests.count() << std::endl;
 	}
 
 
