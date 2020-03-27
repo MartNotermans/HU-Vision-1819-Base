@@ -22,7 +22,7 @@
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
 
-int timePreProcessingStep1 = 0;
+float timePreProcessingStep1 = 0;
 
 int main(int argc, char * argv[]) {
 	auto startTotal = std::chrono::system_clock::now();//total time
@@ -81,6 +81,7 @@ int main(int argc, char * argv[]) {
 		std::chrono::duration<double> elapsed_seconds_tests = endTests - startTests;
 		std::time_t end_time = std::chrono::system_clock::to_time_t(endTests);
 
+		std::cout << "===============" << timePreProcessingStep1 << std::endl;
 		myfile << filename << ";" << timePreProcessingStep1 << ";" << elapsed_seconds_tests.count() << std::endl;
 	}
 
