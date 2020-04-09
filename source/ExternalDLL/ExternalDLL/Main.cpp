@@ -4,17 +4,18 @@
 * Proprietary and confidential
 */
 #pragma warning(disable : 4996)
-#include <iostream> //std::cout
-#include "ImageIO.h" //Image load and save functionality
+#include <iostream> // std::cout
+#include "ImageIO.h" // Image load and save functionality
 #include "HereBeDragons.h"
 #include "ImageFactory.h"
 #include "DLLExecution.h"
 
-#include <chrono> //voor de timers
+#include <chrono> // Timers
 #include <ctime>   
 
-#include <iomanip> //om de bestandsnamen te genereren
-#include <fstream> //om de data op te slaan in een txt file
+#include <iomanip> // Generate filenames (e.g. 00001)
+
+#include <fstream> // Save data to .txt file.
 
 
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
@@ -23,51 +24,54 @@ bool executeSteps(DLLExecution * executor);
 float timePreProcessingStep1 = 0;
 
 int main(int argc, char * argv[]) {
-	auto startTotal = std::chrono::system_clock::now();//total time
+	
+	// Timer for total elapsed time.
+	auto startTotal = std::chrono::system_clock::now();
 	int nSuccessfulFaceRecognition = 0;
 
 	//ImageFactory::setImplementation(ImageFactory::DEFAULT);
 	ImageFactory::setImplementation(ImageFactory::STUDENT);
 
 	ImageIO::debugFolder = "../../../debug/FaceMinMin";
-	ImageIO::isInDebugMode = false; //If set to false the ImageIO class will skip any image save function calls
+	ImageIO::isInDebugMode = false;
 	  
-	std::ofstream myfile; //data opslaaan
+	// Open file to save testdata in.
+	std::ofstream myfile;
 	myfile.open("../../../meetrapporten/working/test1.txt");
-	
-	myfile << "filename" << "\t" << "timePreProcessingStep1" << "\t" << "elapsed_seconds_tests.count()\n"; //wat waar staat
+	myfile << "filename" << "\t" << "timePreProcessingStep1" << "\t" << "elapsed_seconds_tests.count()\n";
 
+	// The amount of pictures that will be analyzed.
 	int aantalFotots = 50;
-	for (int i = 1; i <= aantalFotots; i++) {
+
+	// Loop through chosen amount of pictures and analyze them.
+	for (int i = 1; i <= aantalFotots; i++){
+		
+		// Timer for just the 'student' part.
 		auto startTests = std::chrono::system_clock::now();
 
 		RGBImage* input = ImageFactory::newRGBImage();
 
-		
-
+		// For the filename, add 5 zeroes in front (e.g. 000001).
 		std::stringstream a_stream;
 		a_stream << std::setfill('0') << std::setw(6) << i;
 		std::string filename = a_stream.str();
-		//std::string filename = std::to_string(i);
 
-		//std::string imagePath = "../../../testsets/celebDataset/" + filename + ".jpg"; // Jelle
-		std::string imagePath = "../../../../../pictureDatabase/img_align_celeba/img_align_celeba/" + filename + ".jpg"; // Mart
-		//std::string imagePath = "../../../testsets/Set A/TestSet Images/female-2.png"; // Testset
-		//std::string imagePath = "../../../../../pictureDatabase/Testset-matthijs/PassPhotos/" + filename + ".png"; //testset matthijs pasfoto's
+		// Select location from where the pictures will be loaded. 
+		std::string imagePath = "../../../testsets/celebDataset/" + filename + ".jpg"; // Jelle
+			//std::string imagePath = "../../../../../pictureDatabase/img_align_celeba/img_align_celeba/" + filename + ".jpg"; // Mart
+			//std::string imagePath = "../../../testsets/Set A/TestSet Images/female-2.png"; // Testset
+			//std::string imagePath = "../../../../../pictureDatabase/Testset-matthijs/PassPhotos/" + filename + ".png"; //Testset pasfoto's
 
+		// Print filename.
 		std::cout << "filename: " << filename << "\n";
 
+		// Catch error when image can't be loaded
 		if (!ImageIO::loadImage(imagePath, *input)) {
 			continue;
-			/*std::cout << "Image could not be loaded!" << std::endl;
-			system("pause");
-			return 0;*/
 		}
 
 		ImageIO::saveRGBImage(*input, ImageIO::getDebugFileName("debug.png"));
-
 		DLLExecution* executor = new DLLExecution(input);
-
 
 		if (executeSteps(executor)) {
 			std::cout << "Face recognition successful!" << std::endl;
@@ -80,43 +84,44 @@ int main(int argc, char * argv[]) {
 
 		delete executor;
 
-
+		// End timer for 'student' part.
 		auto endTests = std::chrono::system_clock::now();
 
 		std::chrono::duration<double> elapsed_seconds_tests = endTests - startTests;
 		std::time_t end_time = std::chrono::system_clock::to_time_t(endTests);
 
-		myfile << filename << "\t" << timePreProcessingStep1 << "\t" << elapsed_seconds_tests.count() << std::endl; //sve data
+		// Save 'student' test data to file.
+		myfile << filename << "\t" << timePreProcessingStep1 << "\t" << elapsed_seconds_tests.count() << std::endl;
 	}
 
+	// End timer for total time.
+	auto endTotal = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_seconds_total = endTotal - startTotal;
+	std::time_t end_time = std::chrono::system_clock::to_time_t(endTotal);
 
-	auto endTotal = std::chrono::system_clock::now(); //total time
-
-	std::chrono::duration<double> elapsed_seconds_total = endTotal - startTotal; //total time
-	std::time_t end_time = std::chrono::system_clock::to_time_t(endTotal); //total time
-
-//	std::cout << "Elapsed time: " << elapsed_seconds_total.count() << "s\n";
-	myfile << "total time in sec: " << elapsed_seconds_total.count() << "nSuccessfulFaceRecognition: " << nSuccessfulFaceRecognition;//final data save
-	myfile.close();//data in file
+	// Save final data to file.
+	myfile << "total time in sec: " << elapsed_seconds_total.count() << "nSuccessfulFaceRecognition: " << nSuccessfulFaceRecognition;
+	myfile.close();
 
 	system("pause");
 	return 1;
 }
 
 
-bool executeSteps(DLLExecution * executor) {
+// Execute the Pre-processing steps
+bool executeSteps(DLLExecution * executor){
 
-	//Execute the four Pre-processing steps
-
-	auto startPreProcessingStep1 = std::chrono::system_clock::now();//PreProcessingStep1 time
+	// Timer for just the one step.
+	auto startPreProcessingStep1 = std::chrono::system_clock::now();
 	if (!executor->executePreProcessingStep1(false)) {
 		std::cout << "Pre-processing step 1 failed!" << std::endl;
 		return false;
 	}
-	auto endPreProcessingStep1 = std::chrono::system_clock::now(); //PreProcessingStep1 time
 
-	std::chrono::duration<double> elapsed_seconds_PreProcessingStep1 = endPreProcessingStep1 - startPreProcessingStep1; //PreProcessingStep1 time
-	std::time_t end_time = std::chrono::system_clock::to_time_t(endPreProcessingStep1); //PreProcessingStep1 time
+	// End timer for just the one step.
+	auto endPreProcessingStep1 = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_seconds_PreProcessingStep1 = endPreProcessingStep1 - startPreProcessingStep1;
+	std::time_t end_time = std::chrono::system_clock::to_time_t(endPreProcessingStep1);
 	timePreProcessingStep1 = elapsed_seconds_PreProcessingStep1.count();
 
 	if (!executor->executePreProcessingStep2(false)) {
