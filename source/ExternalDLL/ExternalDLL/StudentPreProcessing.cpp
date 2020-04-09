@@ -3,8 +3,9 @@
 #include <math.h>
 
 IntensityImage * StudentPreProcessing::stepToIntensityImage(const RGBImage &RGB_image) const {
-	//return nullptr;
-
+    // Apply the 'student' code to the images selected in 'main.cpp'. 
+    // Get an image and count all pixels in this image.
+    // Apply the chosen method (Intenisty, Luminance, Luma) to every pixel.
     IntensityImage* intensity_image = ImageFactory::newIntensityImage();
     intensity_image->set(RGB_image.getWidth(), RGB_image.getHeight());
     int nPixels = RGB_image.getWidth() * RGB_image.getHeight();

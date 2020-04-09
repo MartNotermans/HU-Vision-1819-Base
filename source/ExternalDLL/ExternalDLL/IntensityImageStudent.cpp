@@ -1,54 +1,53 @@
 #include "IntensityImageStudent.h"
 
 IntensityImageStudent::IntensityImageStudent() : IntensityImage() {
-	//TODO: Nothing
+	// Initialize.
 	pixelList = new int[1];
 	nPixels = 0;
 }
 
 IntensityImageStudent::IntensityImageStudent(const IntensityImageStudent &other) : IntensityImage(other.getWidth(), other.getHeight()) {
-	//TODO: Create a copy from the other object
+	// Create a copy from the other object.
 	this->set(other.getWidth(), other.getHeight() );
 }
 
 IntensityImageStudent::IntensityImageStudent(const int width, const int height) : IntensityImage(width, height) {
-	//TODO: Initialize pixel storage
+	// Initialize pixel (width, height) storage.
 	this->set(width, height);
 }
 
 IntensityImageStudent::~IntensityImageStudent() {
-	//TODO: delete allocated objects
+	// Delete allocated objects
 	delete[] pixelList;
 }
 
 void IntensityImageStudent::set(const int width, const int height) {
+	// Create a new pixel storage and deleting the old storage.
 	IntensityImage::set(width, height);
-	//TODO: resize or create a new pixel storage (Don't forget to delete the old storage)
 	delete[] pixelList;
 	pixelList = new int[width * height];
 	nPixels = width * height - 1;
 }
 
 void IntensityImageStudent::set(const IntensityImageStudent &other) {
+	// Create a new pixel storage, copy the object, and deleting the old storage.
 	int tempWidth = other.getWidth();
 	int tempHeight = other.getHeight();
 
 	IntensityImage::set(tempWidth, tempHeight);
-	//TODO: resize or create a new pixel storage and copy the object (Don't forget to delete the old storage)
 	delete[] pixelList;
 	pixelList = new int[tempWidth * tempHeight];
 	nPixels = tempWidth * tempHeight - 1;
 }
 
 void IntensityImageStudent::setPixel(int x, int y, Intensity pixel) {
-	//TODO: no comment needed :)
+	// Set pixel
 	setPixel(x + getWidth() * y, pixel);
 }
 
 void IntensityImageStudent::setPixel(int i, Intensity pixel) {
-	/*
-	* TODO: set pixel i in "Row-Major Order"
-	*
+	/* Set pixel i in "Row-Major Order"
+	* See explanation below:
 	*
 	* Original 2d image (values):
 	* 9 1 2
@@ -75,12 +74,12 @@ void IntensityImageStudent::setPixel(int i, Intensity pixel) {
 }
 
 Intensity IntensityImageStudent::getPixel(int x, int y) const {
-	//TODO: no comment needed :)
+	// Return 2 dimensional image pixel
 	return getPixel(x + getWidth() * y);
 }
 
 Intensity IntensityImageStudent::getPixel(int i) const {
-	//TODO: see setPixel(int i, RGB pixel)
+	// Return 1 dimensional image pixel
 	if (i > nPixels) {
 		return -1;
 	}
